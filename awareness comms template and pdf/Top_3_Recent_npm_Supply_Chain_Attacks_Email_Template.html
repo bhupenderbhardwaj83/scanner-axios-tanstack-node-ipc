@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Immediate Developer Workstation and Project Scan Advisory</title>
+</head>
+<body style="margin:0;background:#0b1220;font-family:Arial,Helvetica,sans-serif;color:#111827;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#0b1220;margin:0;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="760" cellspacing="0" cellpadding="0" style="width:760px;max-width:760px;background:#ffffff;border-collapse:collapse;">
+          <tr>
+            <td style="background:#0b1220;padding:28px 32px;color:#ffffff;">
+              <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;font-weight:bold;">Developer Security Advisory</div>
+              <h1 style="margin:10px 0 8px 0;font-size:30px;line-height:36px;color:#ffffff;">Top 3 Recent npm Supply-Chain Attacks</h1>
+              <p style="margin:0;font-size:15px;line-height:22px;color:#dbeafe;">Immediate Developer Workstation and Project Scan Advisory: TanStack, node-ipc, and Axios npm Supply-Chain Risks</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px 32px;">
+              <h2 style="margin:0 0 8px 0;color:#111827;font-size:20px;">Executive Summary</h2>
+              <p style="margin:0 0 14px 0;color:#334155;font-size:14px;line-height:21px;">Recent npm supply-chain attacks have targeted widely used JavaScript/Node ecosystems. Affected components may exist inside projects, IDE extensions, package-manager caches, node_modules folders, and developer workstations. The objective is deterministic IOC/version-based detection, not generic keyword scanning. “No findings” means “no known indicators detected,” not a guarantee of no compromise.</p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:12px 0;">
+                <tr>
+                  <td style="padding:10px;background:#fff1f2;border:1px solid #dc2626;"><b style="color:#dc2626;">CRITICAL</b><br><span style="font-size:13px;color:#334155;">Known compromised package/version or malicious hash.</span></td>
+                  <td style="padding:10px;background:#fff7ed;border:1px solid #ea580c;"><b style="color:#ea580c;">HIGH</b><br><span style="font-size:13px;color:#334155;">Suspicious behavior or credential-access pattern.</span></td>
+                  <td style="padding:10px;background:#fffbeb;border:1px solid #d97706;"><b style="color:#d97706;">MEDIUM</b><br><span style="font-size:13px;color:#334155;">Risky dependency requiring validation.</span></td>
+                </tr>
+              </table>
+              <h2 style="font-size:19px;color:#111827;margin:20px 0 8px;">Attack Timeline</h2>
+              <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;font-size:13px;">
+                <tr style="background:#eff6ff;"><th align="left" style="padding:9px;border:1px solid #cbd5e1;">Attack</th><th align="left" style="padding:9px;border:1px solid #cbd5e1;">What was compromised</th><th align="left" style="padding:9px;border:1px solid #cbd5e1;">Action</th></tr>
+                <tr><td style="padding:9px;border:1px solid #cbd5e1;"><b>TanStack</b></td><td style="padding:9px;border:1px solid #cbd5e1;">84 malicious versions across 42 @tanstack/* packages.</td><td style="padding:9px;border:1px solid #cbd5e1;">Scan packages, lockfiles, router_init.js, tanstack_runner.js, .claude/.vscode.</td></tr>
+                <tr><td style="padding:9px;border:1px solid #cbd5e1;"><b>node-ipc</b></td><td style="padding:9px;border:1px solid #cbd5e1;">node-ipc@9.1.6, 9.2.3, 12.0.1.</td><td style="padding:9px;border:1px solid #cbd5e1;">Scan node_modules/node-ipc, lockfiles, caches, C2/DNS IOCs.</td></tr>
+                <tr><td style="padding:9px;border:1px solid #cbd5e1;"><b>Axios</b></td><td style="padding:9px;border:1px solid #cbd5e1;">axios@1.14.1 and axios@0.30.4 with plain-crypto-js.</td><td style="padding:9px;border:1px solid #cbd5e1;">Scan Axios versions and plain-crypto-js@4.2.1.</td></tr>
+              </table>
+              <h2 style="font-size:19px;color:#111827;margin:20px 0 8px;">Detection and Scanner Design</h2>
+              <p style="font-size:14px;line-height:21px;color:#334155;">Create <b>axios-tanstack-node-ipc.sh</b> with two modes: <b>Quick project scan</b> for the current directory and <b>Whole Mac scan</b> for project, IDE, cache, application, and temp paths. It should produce section-wise console output, a timestamped readable log, and Critical/High/Medium/Info summary counts.</p>
+              <pre style="background:#f1f5f9;border:1px solid #cbd5e1;padding:12px;font-size:12px;line-height:16px;white-space:pre-wrap;">grep -E "@tanstack|node-ipc@|axios@(1\.14\.1|0\.30\.4)|plain-crypto-js" \
+  **/package*.json **/package-lock.json **/pnpm-lock.yaml **/yarn.lock 2&gt;/dev/null</pre>
+              <h2 style="font-size:19px;color:#111827;margin:20px 0 8px;">Remediation</h2>
+              <ul style="font-size:14px;line-height:22px;color:#334155;margin-top:0;">
+                <li>Stop using affected project temporarily.</li>
+                <li>Remove node_modules and clean npm/pnpm/yarn/bun caches.</li>
+                <li>Upgrade affected packages, regenerate lockfiles, and reinstall dependencies.</li>
+                <li>If a critical indicator is found, rotate GitHub tokens, npm tokens, SSH keys, AWS/GCP/Azure secrets, and CI/CD secrets.</li>
+                <li>Review shell history, build logs, and outbound connections.</li>
+              </ul>
+              <p style="background:#eff6ff;border:1px solid #2563eb;padding:12px;font-size:13px;line-height:19px;color:#1e3a8a;"><b>Disclaimer:</b> This scanner performs deterministic IOC and version-based verification against known malicious npm package releases and high-confidence supply-chain indicators. Absence of findings does not guarantee absence of compromise.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
