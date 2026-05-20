@@ -1,4 +1,4 @@
-# Supply-Chain Attack Scanner & C2 Detector
+# Supply-Chain Attack Scanner & C2 Detector for MacOS
 
 > Bash tools for macOS/Linux that detect the May 2026 npm supply-chain compromise and any resulting command-and-control communication — locally, passively, and without sending data anywhere.
 
@@ -41,9 +41,21 @@ Scans your project (or your entire machine) for malicious package versions, inje
 
 | Mode | What it scans | Time |
 |---|---|---|
-| `[1] Full computer scan` | `$HOME` + common dev directories | 5–10 min., can take longer |
-| `[2] Project scan` | One directory you specify | 60–240 s (Preferred) |
-| `[3] Fast scan` | Lockfiles + globals + IOC files only | ~30 s, 90%+ accuracy |
+| `[1] Full computer scan` | `$HOME` + common dev directories | ~300–600 s (May take up longer on Mac) |
+| `[2] Project scan` | One directory you specify | ~60–300 s (Tested and Preferred) |
+| `[3] Fast scan` | Lockfiles + globals + IOC files only | ~60-120 s, 90%+ accuracy |
+
+### Scan Results Examples
+
+**Clean Project Scan**
+| Scan Initiated | Scan Result |
+| :---: | :---: |
+| ![Scan Initiated (Clean)](sample-scan-output-image/scan-initiated-1-clean-project.png) | ![Scan Result (Clean)](sample-scan-output-image/scan-result-1-clean-project.png) |
+
+**Vulnerable Project Scan**
+| Scan Initiated | Scan Result |
+| :---: | :---: |
+| ![Scan Initiated (Vulnerable)](sample-scan-output-image/scan-initiated-2-vulnerable-project.png) | ![Scan Result (Vulnerable)](sample-scan-output-image/scan-result-2-vulnerable-project.png) |
 
 ### 2. `cnc-detector.sh` — C2 / CnC Communication Detector
 
@@ -69,6 +81,17 @@ Checks whether any installed payload has already communicated with attacker infr
 | node-ipc | `sh.azurestaticprovider.net` · `bt.node.js` | `37.16.75.69` |
 | TanStack | `cdn-tanstack-router.vercel-dns.com` · `tanstack-telemetry.workers.dev` · `router-analytics.tanstack-cdn.com` | `185.220.101.47` · `104.21.96.1` |
 | Axios | `plain-crypto.vercel.app` · `analytics.plain-crypto.com` · `api.cryptojs-cdn.net` · `data-collect.axios-cdn.workers.dev` | `78.46.92.33` · `95.216.147.234` |
+
+---
+
+## ⚠️ Dummy Vulnerable Project Warning
+
+This repository contains a `dummy-vuln-project` directory designed strictly for safely testing the scanner using the `[2] Project scan` mode. 
+
+> [!CAUTION]
+> **DO NOT** run `npm install`, `yarn`, or `pnpm install` inside the `dummy-vuln-project` directory. 
+> 
+> Doing so may download and execute actively malicious code on your machine. The dummy project has been carefully pre-configured with safe, mock artifacts so that the scanner will detect the vulnerabilities without requiring an actual package installation.
 
 ---
 
@@ -204,6 +227,7 @@ The tools are tuned to minimize noise on corporate macOS machines:
 
 ## Credits
 
+Built by **Design Engineer** in response to the May 2026 npm supply-chain compromise.
 Built by **Design Engineer** in response to the May 2026 npm supply-chain compromise.
 
 Vulnerability intelligence sources: StepSecurity disclosure (node-ipc), npm security advisories (TanStack CVE-2026-45321), Axios GitHub issue tracker.
