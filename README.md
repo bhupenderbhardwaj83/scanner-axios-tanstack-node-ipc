@@ -204,6 +204,6 @@ The tools are tuned to minimize noise on corporate macOS machines:
 
 ## Credits
 
-Built by **Design Engineer — Network18** in response to the May 2026 npm supply-chain compromise.
+Built by **Design Engineer** in response to the May 2026 npm supply-chain compromise.
 
 Vulnerability intelligence sources: StepSecurity disclosure (node-ipc), npm security advisories (TanStack CVE-2026-45321), Axios GitHub issue tracker.
