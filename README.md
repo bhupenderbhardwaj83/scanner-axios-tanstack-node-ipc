@@ -41,8 +41,8 @@ Scans your project (or your entire machine) for malicious package versions, inje
 
 | Mode | What it scans | Time |
 |---|---|---|
-| `[1] Full computer scan` | `$HOME` + common dev directories | 2–5 min |
-| `[2] Project scan` | One directory you specify | 10–30 s |
+| `[1] Full computer scan` | `$HOME` + common dev directories | 5–10 min., can take longer |
+| `[2] Project scan` | One directory you specify | 60–240 s (Preferred) |
 | `[3] Fast scan` | Lockfiles + globals + IOC files only | ~30 s, 90%+ accuracy |
 
 ### 2. `cnc-detector.sh` — C2 / CnC Communication Detector
