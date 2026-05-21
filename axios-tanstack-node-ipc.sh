@@ -350,7 +350,15 @@ else
           [[ -z "$iv" ]] && continue
           already_bad=0
           for bver in "${TANSTACK_BAD_VERSIONS[@]}"; do [[ "$iv" == "$bver" ]] && already_bad=1; done
-          [[ $already_bad -eq 0 ]] && warn "TanStack present [$lf_pm]: ${pkg}@${iv} — run: npm view ${pkg}@${iv} time"
+          if [[ $already_bad -eq 0 ]]; then
+            warn "TanStack present [$lf_pm]: ${pkg}@${iv}"
+            detail "File:        $lf"
+            detail "Package:     ${pkg}@${iv}"
+            detail "Warn type:   Version not in known-bad list — publish date unverified"
+            detail "Action:      Run: npm view ${pkg}@${iv} time"
+            detail "             IGNORE if publish date is NOT between 2026-05-10 and 2026-05-14"
+            detail "             ESCALATE (treat as HIT) if date falls within that window"
+          fi
         done <<< "$installed_vers"
       fi
     done
@@ -881,8 +889,15 @@ else
         [[ -z "$av" ]] && continue
         already_bad=0
         for bver in "${AXIOS_BAD_VERSIONS[@]}"; do [[ "$av" == "$bver" ]] && already_bad=1; done
-        [[ $already_bad -eq 0 ]] && \
+        if [[ $already_bad -eq 0 ]]; then
           warn "axios@${av} in [$lf_pm] — verify this is not a compromised version"
+          detail "File:        $lf"
+          detail "Package:     axios@${av}"
+          detail "Warn type:   Version not in known-bad list (1.14.1 / 0.30.4) — publish date unverified"
+          detail "Action:      Run: npm view axios@${av} time"
+          detail "             IGNORE if publish date is NOT between 2026-05-10 and 2026-05-14"
+          detail "             ESCALATE (treat as HIT) if date falls within that window"
+        fi
       done <<< "$all_axios"
     fi
 
@@ -915,8 +930,16 @@ while IFS= read -r pkg_json; do
     fi
   done
 
-  in_risk_window "$ax_date" && \
-    { warn "axios installed/updated DURING risk window ($ax_date): ${ax_ver} — $pkg_json"; }
+  if in_risk_window "$ax_date"; then
+    warn "axios installed/updated DURING risk window ($ax_date): ${ax_ver}"
+    detail "File:        $pkg_json"
+    detail "Package:     axios@${ax_ver}"
+    detail "Installed:   $ax_date"
+    detail "Warn type:   Install date falls in compromise window (2026-05-10 to 2026-05-14)"
+    detail "Action:      Run: npm view axios@${ax_ver} time  — check if publish date matches"
+    detail "             If axios@${ax_ver} is NOT 1.14.1 or 0.30.4, this is likely a false positive"
+    detail "             ESCALATE only if version is 1.14.1 or 0.30.4"
+  fi
 done < <(
   find "${SCAN_ROOTS[@]}" -maxdepth $MAXDEPTH \
     -path "*/node_modules/axios/package.json" \
